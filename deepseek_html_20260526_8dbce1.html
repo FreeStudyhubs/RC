@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>GMAT Reading Comprehension Exam</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(135deg, #0f2c22 0%, #1a4a3a 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 25px 20px;
+            min-height: 100vh;
+        }
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+        }
+        /* Candidate Header */
+        .candidate-header {
+            background: #1e4a3a;
+            padding: 18px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 3px solid #ffd966;
+        }
+        .candidate-header input {
+            background: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+        .candidate-header label {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        /* Start Screen */
+        .start-screen {
+            background: #0a2f23;
+            text-align: center;
+            padding: 60px 30px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .start-screen h1 {
+            color: #ffd966;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+        .start-screen h2 {
+            color: #ddd;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-weight: normal;
+            max-width: 500px;
+        }
+        .mode-choice {
+            background: #1e4a3a;
+            padding: 15px 30px;
+            border-radius: 60px;
+            margin: 25px 0;
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .mode-choice label {
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .start-btn {
+            background: #ffb347;
+            border: none;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 14px 50px;
+            border-radius: 60px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .start-btn:hover {
+            background: #ffcc66;
+            transform: scale(1.02);
+        }
+        .info-text {
+            color: #aaa;
+            margin-top: 25px;
+            font-size: 0.85rem;
+        }
+        /* Exam Content */
+        .exam-content {
+            display: none;
+            padding: 25px 30px 35px;
+        }
+        .top-bar {
+            background: #eef3f0;
+            padding: 12px 22px;
+            border-radius: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .mode-toggles {
+            display: flex;
+            gap: 20px;
+            background: white;
+            padding: 5px 18px;
+            border-radius: 50px;
+        }
+        .mode-toggles label {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .timer-box {
+            background: #0a2f23;
+            color: #f9b84a;
+            font-family: monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 5px 22px;
+            border-radius: 50px;
+            letter-spacing: 2px;
+        }
+        /* Passage styling */
+        .passage-block {
+            background: #fef7e0;
+            border-left: 8px solid #c16f1a;
+            padding: 22px 28px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+        }
+        .passage-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #b45f1b;
+            border-bottom: 1px solid #f0d89e;
+            padding-bottom: 8px;
+        }
+        .passage-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2c2b1f;
+        }
+        .passage-text p {
+            margin-bottom: 14px;
+        }
+        .passage-text p:last-child {
+            margin-bottom: 0;
+        }
+        /* Questions */
+        .questions-section {
+            margin-top: 10px;
+        }
+        .section-label {
+            font-weight: 800;
+            font-size: 1rem;
+            color: #1e4a3a;
+            background: #eef3f0;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+        }
+        .question-card {
+            background: #fdfdfd;
+            border: 1px solid #d4e0da;
+            border-radius: 20px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+        }
+        .q-num {
+            font-weight: 800;
+            color: #b45f1b;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        .q-text {
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: #1f4e3c;
+        }
+        .options {
+            padding-left: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            display: flex;
+            gap: 12px;
+            align-items: baseline;
+            cursor: pointer;
+        }
+        .option input {
+            width: 18px;
+            height: 18px;
+            accent-color: #c16f1a;
+            cursor: pointer;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            margin: 25px 0 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            border: none;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .btn-clear {
+            background: #5a7a6e;
+            color: white;
+        }
+        .btn-clear:hover {
+            background: #3d5a4e;
+        }
+        .btn-submit {
+            background: #b45309;
+            color: white;
+            font-size: 1rem;
+            padding: 12px 45px;
+        }
+        .btn-submit:hover {
+            background: #8e3b06;
+        }
+        .results-panel {
+            background: #f4f7f4;
+            margin-top: 25px;
+            border-radius: 24px;
+            padding: 20px 25px;
+            display: none;
+            border: 1px solid #cbdcd3;
+        }
+        .result-item {
+            background: white;
+            border-radius: 18px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 6px solid;
+        }
+        .result-correct {
+            border-left-color: #2b7a4b;
+            background: #f0fdf4;
+        }
+        .result-wrong {
+            border-left-color: #c2410c;
+            background: #fff7ed;
+        }
+        .score-badge {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 20px;
+            color: #6b8b7e;
+            border-top: 1px solid #e0e8e0;
+            padding-top: 18px;
+        }
+        @media (max-width: 650px) {
+            .exam-content { padding: 18px; }
+            .timer-box { font-size: 1.3rem; padding: 4px 15px; }
+            .passage-block { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container" id="appContainer">
+    <!-- Candidate Header (hidden until start) -->
+    <div id="candidateHeader" class="candidate-header" style="display: none;">
+        <div><label>👤 Candidate:</label> <input type="text" id="candidateName" placeholder="Enter your name"></div>
+        <div><label>📅 Date:</label> <input type="text" id="examDate" placeholder="YYYY-MM-DD"></div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="startScreen" class="start-screen">
+        <h1>📚 GMAT READING COMPREHENSION</h1>
+        <h2>Two passages · 13 questions</h2>
+        <div class="mode-choice">
+            <label><input type="radio" name="startMode" value="exam" checked> 🕒 Exam Mode (20 min)</label>
+            <label><input type="radio" name="startMode" value="study"> 📖 Study Mode (no timer)</label>
+        </div>
+        <button id="beginExamBtn" class="start-btn">▶ START EXAM</button>
+        <div class="info-text">Passage 1: Snake Cardiovascular Adaptations (8 questions)<br>Passage 2: Manufacturing & Economies of Scale (5 questions)</div>
+    </div>
+
+    <!-- EXAM CONTENT -->
+    <div id="examContent" class="exam-content">
+        <div class="top-bar">
+            <div class="mode-toggles">
+                <label><input type="radio" name="modeSelect" value="exam"> Exam Mode</label>
+                <label><input type="radio" name="modeSelect" value="study"> Study Mode</label>
+            </div>
+            <div id="globalTimer" class="timer-box">20:00</div>
+        </div>
+
+        <!-- PASSAGE 1 -->
+        <div class="passage-block">
+            <div class="passage-title">Passage 1</div>
+            <div class="passage-text">
+                <p>In terrestrial environments, gravity places special demands on the cardiovascular systems of animals. Gravitational pressure can cause blood to pool in the lower regions of the body, making it difficult to circulate blood to critical organs such as the brain. Terrestrial snakes, in particular, exhibit adaptations that aid in circulating blood against the force of gravity.</p>
+                <p>The problem confronting terrestrial snakes is best illustrated by what happens to sea snakes when removed from their supportive medium. Because the vertical pressure gradients within the blood vessels are counteracted by similar pressure gradients in the surrounding water, the distribution of blood throughout the body of sea snakes remains about the same regardless of their orientation in space, provided they remain in the ocean. When removed from the water and tilted at various angles with the head up, however, blood pressure at their midpoint drops significantly, and at brain level falls to zero. That many terrestrial snakes in similar spatial orientations do not experience this kind of circulatory failure suggests that certain adaptations enable them to regulate blood pressure more effectively in those orientations.</p>
+                <p>One such adaptation is the closer proximity of the terrestrial snake's heart to its head, which helps to ensure circulation to the brain, regardless of the snake's orientation in space. The heart of sea snakes can be located near the middle of the body, a position that minimizes the work entailed in circulating blood to both extremities. In arboreal snakes, however, which dwell in trees and often assume a vertical posture, the average distance from the heart to the head can be as little as 15 percent of overall body length. Such a location requires that blood circulated to the tail of the snake travel a greater distance back to the heart, a problem solved by another adaptation. When climbing, arboreal snakes often pause momentarily to wiggle their bodies, causing waves of muscle contraction that advance from the lower torso to the head. By compressing the veins and forcing blood forward, these contractions apparently improve the flow of venous blood returning to the heart.</p>
+            </div>
+        </div>
+
+        <!-- Questions for Passage 1 -->
+        <div class="questions-section" id="passage1Questions"></div>
+
+        <!-- PASSAGE 2 -->
+        <div class="passage-block" style="margin-top: 10px;">
+            <div class="passage-title">Passage 2</div>
+            <div class="passage-text">
+                <p>Manufacturers have to do more than build large manufacturing plants to realize economies of scale. It is true that as the capacity of a manufacturing operation rises, costs per unit of output fall as plant size approaches "minimum efficient scale," where the cost per unit of output reaches a minimum, determined roughly by the state of existing technology and size of the potential market. However, minimum efficient scale cannot be fully realized unless a steady "throughput" (the flow of materials through a plant) is attained. The throughput needed to maintain the optimal scale of production requires careful coordination not only of the flow of goods through the production process, but also of the flow of input from suppliers and the flow of output to wholesalers and final consumers. If throughput falls below a critical point, unit costs rise sharply and profits disappear. A manufacturer's fixed costs and "sunk costs" (original capital investment in the physical plant) do not decrease when production declines due to inadequate supplies of raw materials, problems on the factory floor, or inefficient sales networks. Consequently, potential economies of scale are based on the physical and engineering characteristics of the production facilities—that is, on tangible capital—but realized economies of scale are operational and organizational, and depend on knowledge, skills, experience, and teamwork—that is, on organized human capabilities, or intangible capital.</p>
+                <p>The importance of investing in intangible capital becomes obvious when one looks at what happens in new capital-intensive manufacturing industries. Such industries are quickly dominated, not by the first firms to acquire technologically sophisticated plants of theoretically optimal size, but rather by the first to exploit the full potential of such plants. Once some firms achieve this, a market becomes extremely hard to enter. Challengers must construct comparable plants and do so after the first movers have already worked out problems with suppliers or with new production processes. Challengers must create distribution networks and marketing systems in markets where first movers have all the contacts and know-how. And challengers must recruit management teams to compete with those that have already mastered these functional and strategic activities.</p>
+            </div>
+        </div>
+
+        <!-- Questions for Passage 2 -->
+        <div class="questions-section" id="passage2Questions"></div>
+
+        <div class="action-buttons">
+            <button id="clearBtn" class="btn-clear">⟳ Clear All Answers</button>
+            <button id="submitBtn" class="btn-submit">📥 SUBMIT EXAM</button>
+        </div>
+
+        <div id="resultsPanel" class="results-panel"></div>
+        <footer>Answer all 13 questions. Submit for score and detailed explanations.</footer>
+    </div>
+</div>
+
+<script>
+    // ========== PASSAGE 1 QUESTIONS (8) ==========
+    const PASSAGE1_QS = [
+        { text: "The passage provides information in support of which of the following assertions?",
+          opts: ["(A) The disadvantages of an adaptation to a particular feature of an environment often outweigh the advantages of such an adaptation.",
+                 "(B) An organism's reaction to being placed in an environment to which it is not well adapted can sometimes illustrate the problems that have been solved by the adaptations of organisms indigenous to that environment.",
+                 "(C) The effectiveness of an organism's adaptation to a particular feature of its environment can only be evaluated by examining the effectiveness with which organisms of other species have adapted to a similar feature of a different environment.",
+                 "(D) Organisms of the same species that inhabit strikingly different environments will often adapt in remarkably similar ways to the few features of those environments that are common.",
+                 "(E) Different species of organisms living in the same environment will seldom adapt to features of that environment in the same way."],
+          correct: "B", explanation: "Sea snakes removed from water show circulatory failure, illustrating problems terrestrial snakes solved through adaptations." },
+        { text: "According to the passage, one reason that the distribution of blood in the sea snake changes little while the creature remains in the ocean is that",
+          opts: ["(A) the heart of the sea snake tends to be located near the center of its body",
+                 "(B) pressure gradients in the water surrounding the sea snake counter the effects of vertical pressure gradients within its blood vessels",
+                 "(C) the sea snake assumes a vertical posture less frequently than do the terrestrial and the arboreal snake",
+                 "(D) the sea snake often relies on waves of muscle contractions to help move blood from the torso to the head",
+                 "(E) the force of pressure gradients in the water surrounding the sea snake exceeds that of vertical pressure gradients within its circulatory system"],
+          correct: "B", explanation: "Passage states: 'vertical pressure gradients ... counteracted by similar pressure gradients in the surrounding water'." },
+        { text: "It can be inferred from the passage that which of the following is true of species of terrestrial snakes that often need to assume a vertical posture?",
+          opts: ["(A) They are more likely to be susceptible to circulatory failure in vertical postures than are sea snakes.",
+                 "(B) Their hearts are less likely to be located at the midpoint of their bodies than is the case with sea snakes.",
+                 "(C) They cannot counteract the pooling of blood in lower regions of their bodies as effectively as sea snakes can.",
+                 "(D) The blood pressure at their midpoint decreases significantly when they are tilted with their heads up.",
+                 "(E) They are unable to rely on muscle contractions to move venous blood from the lower torso to the head."],
+          correct: "B", explanation: "Sea snakes have heart near middle; terrestrial vertical-posture snakes (arboreal) have heart closer to head (15% from head)." },
+        { text: "The author describes the behavior of the circulatory system of sea snakes when they are removed from the ocean primarily in order to",
+          opts: ["(A) illustrate what would occur in the circulatory system of terrestrial snakes without adaptations that enable them to regulate their blood pressure in vertical orientations",
+                 "(B) explain why arboreal snakes in vertical orientations must rely on muscle contractions to restore blood pressure to the brain",
+                 "(C) illustrate the effects of circulatory failure on the behavior of arboreal snakes",
+                 "(D) illustrate the superiority of the circulatory system of the terrestrial snake to that of the sea snake",
+                 "(E) explain how changes in spatial orientation can adversely affect the circulatory system of snakes with hearts located in relatively close proximity to their heads"],
+          correct: "A", explanation: "Sea snakes out of water show what would happen without gravity adaptations, illustrating the problem terrestrial snakes solved." },
+        { text: "It can be inferred from the passage that which of the following is a true statement about sea snakes?",
+          opts: ["(A) They frequently rely on waves of muscle contractions from the lower torso to the head to supplement the work of the heart.",
+                 "(B) They cannot effectively regulate their blood pressure when placed in sea water and tilted at an angle with the head pointed downward.",
+                 "(C) They are more likely to have a heart located in close proximity to their heads than are arboreal snakes.",
+                 "(D) They become acutely vulnerable to the effects of gravitational pressure on their circulatory system when they are placed in a terrestrial environment.",
+                 "(E) Their cardiovascular system is not as complicated as that of arboreal snakes."],
+          correct: "D", explanation: "When removed from water (on land) and tilted, blood pressure drops to zero → vulnerable to gravity on land." },
+        { text: "The author suggests that which of the following is a disadvantage that results from the location of a snake's heart in close proximity to its head?",
+          opts: ["(A) A decrease in the efficiency with which the snake regulates the flow of blood to the brain",
+                 "(B) A decrease in the number of orientations in space that a snake can assume without loss of blood flow to the brain",
+                 "(C) A decrease in blood pressure at the snake's midpoint when it is tilted at various angles with its head up",
+                 "(D) An increase in the tendency of blood to pool at the snake's head when the snake is tilted at various angles with its head down",
+                 "(E) An increase in the amount of effort required to distribute blood to and from the snake's tail"],
+          correct: "E", explanation: "Heart near head means blood to tail travels farther back; muscle contractions help, but disadvantage = more effort for tail circulation." },
+        { text: "The primary purpose of the third paragraph is to",
+          opts: ["(A) introduce a topic that is not discussed earlier in the passage",
+                 "(B) describe a more efficient method of achieving an effect discussed in the previous paragraph",
+                 "(C) draw a conclusion based on information elaborated in the previous paragraph",
+                 "(D) discuss two specific examples of phenomena mentioned at the end of the previous paragraph",
+                 "(E) introduce evidence that undermines a view reported earlier in the passage"],
+          correct: "D", explanation: "Third paragraph gives two specific adaptations: heart proximity in arboreal snakes and muscle contractions." },
+        { text: "In the passage, the author is primarily concerned with doing which of the following?",
+          opts: ["(A) Explaining adaptations that enable the terrestrial snake to cope with the effects of gravitational pressure on its circulatory system",
+                 "(B) Comparing the circulatory system of the sea snake with that of the terrestrial snake",
+                 "(C) Explaining why the circulatory system of the terrestrial snake is different from that of the sea snake",
+                 "(D) Pointing out features of the terrestrial snake's cardiovascular system that make it superior to that of the sea snake",
+                 "(E) Explaining how the sea snake is able to neutralize the effects of gravitational pressure on its circulatory system"],
+          correct: "A", explanation: "Main focus: terrestrial snake adaptations (heart near head, muscle contractions) to overcome gravity." }
+    ];
+
+    // ========== PASSAGE 2 QUESTIONS (5) ==========
+    const PASSAGE2_QS = [
+        { text: "The passage suggests that in order for a manufacturer in a capital-intensive industry to have a decisive advantage over competitors making similar products, the manufacturer must",
+          opts: ["(A) be the first in the industry to build production facilities of theoretically optimal size",
+                 "(B) make every effort to keep fixed and sunk costs as low as possible",
+                 "(C) be one of the first to operate its manufacturing plants at minimum efficient scale",
+                 "(D) produce goods of higher quality than those produced by direct competitors",
+                 "(E) stockpile raw materials at production sites in order to ensure a steady flow of such materials"],
+          correct: "C", explanation: "Second paragraph: industries are dominated not by first to acquire optimal-size plants, but by first to exploit full potential (operate at minimum efficient scale with steady throughput)." },
+        { text: "The passage suggests that which of the following is true of a manufacturer's fixed and sunk costs?",
+          opts: ["(A) The extent to which they are determined by market conditions for the goods being manufactured is frequently underestimated.",
+                 "(B) If they are kept as low as possible, the manufacturer is very likely to realize significant profits.",
+                 "(C) They are the primary factor that determines whether a manufacturer will realize economies of scale.",
+                 "(D) They should be on a par with the fixed and sunk costs of the manufacturer’s competitors.",
+                 "(E) They are not affected by fluctuations in a manufacturing plant’s throughput."],
+          correct: "E", explanation: "Passage: 'A manufacturer's fixed costs and sunk costs do not decrease when production declines' → not affected by throughput fluctuations." },
+        { text: "In the context of the passage as a whole, the second paragraph serves primarily to",
+          opts: ["(A) provide an example to support the argument presented in the first paragraph",
+                 "(B) evaluate various strategies discussed in the first paragraph",
+                 "(C) introduce evidence that undermines the argument presented in the first paragraph",
+                 "(D) anticipate possible objections to the argument presented in the first paragraph",
+                 "(E) demonstrate the potential dangers of a commonly used strategy"],
+          correct: "A", explanation: "First paragraph argues intangible capital is key; second paragraph gives example of capital-intensive industries where first movers with intangible capital dominate → supports argument." },
+        { text: "The passage LEAST supports the inference that a manufacturer's throughput could be adversely affected by",
+          opts: ["(A) a mistake in judgment regarding the selection of a wholesaler",
+                 "(B) a breakdown in the factory's machinery",
+                 "(C) a labor dispute on the factory floor",
+                 "(D) an increase in the cost per unit of output",
+                 "(E) a drop in the efficiency of the sales network"],
+          correct: "D", explanation: "Throughput is flow of materials; increase in cost per unit is a result of low throughput, not a cause. Others directly affect throughput." },
+        { text: "The primary purpose of the passage is to",
+          opts: ["(A) point out the importance of intangible capital for realizing economies of scale in manufacturing",
+                 "(B) show that manufacturers frequently gain a competitive advantage from investment in large manufacturing facilities",
+                 "(C) argue that large manufacturing facilities often fail because of inadequate investment in both tangible and intangible capital",
+                 "(D) suggest that most new industries are likely to be dominated by firms that build large manufacturing plants early",
+                 "(E) explain why large manufacturing plants usually do not help manufacturers achieve economies of scale"],
+          correct: "A", explanation: "Passage contrasts tangible vs intangible capital, concluding realized economies depend on intangible capital (knowledge, skills, teamwork)." }
+    ];
+
+    const ALL_QS = [...PASSAGE1_QS, ...PASSAGE2_QS];
+    const TOTAL_QS = ALL_QS.length;
+
+    // State
+    let timerInterval = null;
+    let timeLeft = 20 * 60;
+    let currentMode = "exam";
+    let submitted = false;
+    let examActive = false;
+
+    // DOM
+    const startScreen = document.getElementById("startScreen");
+    const examContent = document.getElementById("examContent");
+    const candidateHeader = document.getElementById("candidateHeader");
+    const beginBtn = document.getElementById("beginExamBtn");
+    const passage1Container = document.getElementById("passage1Questions");
+    const passage2Container = document.getElementById("passage2Questions");
+    const timerDisplay = document.getElementById("globalTimer");
+    const clearBtn = document.getElementById("clearBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultsPanel = document.getElementById("resultsPanel");
+    const modeRadios = document.querySelectorAll('input[name="modeSelect"]');
+
+    function formatTime(sec) {
+        let mins = Math.floor(sec / 60);
+        let secs = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+    }
+
+    function stopTimer() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }
+
+    function startTimer() {
+        if (currentMode !== "exam") return;
+        if (submitted) return;
+        stopTimer();
+        timerInterval = setInterval(() => {
+            if (timeLeft <= 1) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                if (!submitted && examActive) {
+                    alert("Time's up! Auto-submitting.");
+                    submitExam();
+                }
+            } else {
+                timeLeft--;
+                timerDisplay.textContent = formatTime(timeLeft);
+            }
+        }, 1000);
+    }
+
+    function renderAllQuestions() {
+        // Render Passage 1 questions (global indices 0-7)
+        passage1Container.innerHTML = `<div class="section-label">Questions 1–8 (Passage 1)</div>`;
+        PASSAGE1_QS.forEach((q, idx) => {
+            const qDiv = document.createElement("div");
+            qDiv.className = "question-card";
+            qDiv.innerHTML = `
+                <div class="q-num">Question ${idx+1}</div>
+                <div class="q-text">${q.text}</div>
+                <div class="options">
+                    ${q.opts.map((opt, oidx) => {
+                        const letter = String.fromCharCode(65 + oidx);
+                        return `<div class="option">
+                            <input type="radio" name="q${idx}" value="${letter}" id="q1_${idx}_${letter}">
+                            <label for="q1_${idx}_${letter}">${opt}</label>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `;
+            passage1Container.appendChild(qDiv);
+        });
+
+        // Render Passage 2 questions (global indices 8-12)
+        passage2Container.innerHTML = `<div class="section-label" style="margin-top: 5px;">Questions 9–13 (Passage 2)</div>`;
+        PASSAGE2_QS.forEach((q, idx) => {
+            const globalIdx = 8 + idx;
+            const qDiv = document.createElement("div");
+            qDiv.className = "question-card";
+            qDiv.innerHTML = `
+                <div class="q-num">Question ${globalIdx+1}</div>
+                <div class="q-text">${q.text}</div>
+                <div class="options">
+                    ${q.opts.map((opt, oidx) => {
+                        const letter = String.fromCharCode(65 + oidx);
+                        return `<div class="option">
+                            <input type="radio" name="q${globalIdx}" value="${letter}" id="q2_${idx}_${letter}">
+                            <label for="q2_${idx}_${letter}">${opt}</label>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `;
+            passage2Container.appendChild(qDiv);
+        });
+    }
+
+    function getAllAnswers() {
+        let answers = {};
+        for (let i = 0; i < TOTAL_QS; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            answers[i] = selected ? selected.value : null;
+        }
+        return answers;
+    }
+
+    function clearAllAnswers() {
+        for (let i = 0; i < TOTAL_QS; i++) {
+            const radios = document.querySelectorAll(`input[name="q${i}"]`);
+            radios.forEach(r => r.checked = false);
+        }
+    }
+
+    function submitExam() {
+        if (submitted) { alert("Exam already submitted."); return; }
+        submitted = true;
+        stopTimer();
+        const answers = getAllAnswers();
+        let score = 0;
+        let details = [];
+        for (let i = 0; i < TOTAL_QS; i++) {
+            const user = answers[i];
+            const isCorrect = (user && user === ALL_QS[i].correct);
+            if (isCorrect) score++;
+            const passageLabel = (i < 8) ? "Passage 1 (Snakes)" : "Passage 2 (Manufacturing)";
+            details.push({
+                num: i+1,
+                text: ALL_QS[i].text,
+                user: user || "—",
+                correct: ALL_QS[i].correct,
+                isCorrect: isCorrect,
+                explanation: ALL_QS[i].explanation,
+                passage: passageLabel
+            });
+        }
+        const percent = Math.round((score/TOTAL_QS)*100);
+        let html = `<div class="score-badge">📊 Total Score: ${score} / ${TOTAL_QS} (${percent}%)</div>`;
+        html += `<div style="margin-bottom: 12px;"><strong>Detailed Answers & Explanations</strong></div>`;
+        for (let d of details) {
+            const statusClass = d.isCorrect ? "result-correct" : "result-wrong";
+            html += `
+                <div class="result-item ${statusClass}">
+                    <strong>Q${d.num} [${d.passage}]:</strong> ${d.text}<br>
+                    <strong>Your answer:</strong> ${d.user}<br>
+                    <strong>Correct answer:</strong> ${d.correct}<br>
+                    <strong>Explanation:</strong> ${d.explanation}
+                </div>
+            `;
+        }
+        resultsPanel.innerHTML = html;
+        resultsPanel.style.display = "block";
+        document.querySelectorAll('.question-card input[type="radio"]').forEach(r => r.disabled = true);
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.6";
+    }
+
+    function switchMode() {
+        if (!examActive) return;
+        const selected = document.querySelector('input[name="modeSelect"]:checked').value;
+        currentMode = selected;
+        if (!submitted) {
+            if (currentMode === "exam") {
+                timeLeft = 20 * 60;
+                timerDisplay.textContent = formatTime(timeLeft);
+                stopTimer();
+                startTimer();
+            } else {
+                stopTimer();
+                timerDisplay.textContent = "∞";
+            }
+        }
+    }
+
+    function startExam() {
+        const startModeVal = document.querySelector('input[name="startMode"]:checked').value;
+        currentMode = startModeVal;
+        examActive = true;
+        submitted = false;
+        startScreen.style.display = "none";
+        candidateHeader.style.display = "flex";
+        examContent.style.display = "block";
+        
+        document.querySelectorAll('input[name="modeSelect"]').forEach(r => {
+            if (r.value === currentMode) r.checked = true;
+        });
+        
+        renderAllQuestions();
+        
+        if (currentMode === "exam") {
+            timeLeft = 20 * 60;
+            timerDisplay.textContent = formatTime(timeLeft);
+            startTimer();
+        } else {
+            timerDisplay.textContent = "∞";
+        }
+        resultsPanel.style.display = "none";
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+    }
+
+    // Event listeners
+    beginBtn.addEventListener("click", startExam);
+    clearBtn.addEventListener("click", () => { if (examActive && !submitted) clearAllAnswers(); else if (submitted) alert("Already submitted."); });
+    submitBtn.addEventListener("click", () => { if (examActive && !submitted) submitExam(); else if (submitted) alert("Already submitted."); });
+    modeRadios.forEach(r => r.addEventListener("change", switchMode));
+</script>
+</body>
+</html>
